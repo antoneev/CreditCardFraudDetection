@@ -1,3 +1,8 @@
+# TODO
+# Add Comments
+# Fix ReadME
+# Add some interesting functionality
+
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -15,8 +20,25 @@ from sklearn.metrics import accuracy_score
 import matplotlib.pyplot as plt
 
 # Creating side bar with options
-menu = ["Home","Data Exploration","Data Modeling"]
+menu = ["Home","Data Exploration","Existing Data Modeling","New Data Modeling"]
 choice = st.sidebar.selectbox("Menu",menu)
+
+def dataSplit(df):
+    X = df.drop('Class', axis=1)
+    y = df['Class']
+
+    training_features, test_features, training_target, test_target \
+        = train_test_split(X, y, test_size=0.20, random_state=30)
+
+    # Random Under Sampling
+    x_train, x_val, y_train, y_val = train_test_split(training_features, training_target,
+                                                      test_size=.10,
+                                                      random_state=12)
+
+    rus = RandomUnderSampler(random_state=42)
+    x_train_res, y_train_res = rus.fit_resample(x_train, y_train)
+
+    return training_features, test_features, training_target, test_target, x_train, x_val, y_train, y_val, x_train_res, y_train_res
 
 def menuChoiceHome():
     # On page load or clicking the Home selection
@@ -115,23 +137,11 @@ def menuChoiceDE(df, dfScaled):
         # Display Correlection Heatmap
         st.image('imgs/corr.png')
 
-def menuChoiceDM(df, scaledDf):
+def menuChoiceEDM(df):
     # Displaying the page title
     st.title('Data Modeling')
 
-    X = df.drop('Class', axis=1)
-    y = df['Class']
-
-    training_features, test_features, training_target, test_target \
-    = train_test_split(X, y, test_size=0.20, random_state=30)
-
-    # Random Under Sampling
-    x_train, x_val, y_train, y_val = train_test_split(training_features, training_target,
-                                                      test_size=.10,
-                                                      random_state=12)
-
-    rus = RandomUnderSampler(random_state=42)
-    x_train_res, y_train_res = rus.fit_resample(x_train, y_train)
+    training_features, test_features, training_target, test_target, x_train, x_val, y_train, y_val, x_train_res, y_train_res = dataSplit(df)
 
     dfModels = pd.read_csv('GridSearchCV.csv')
     best_estimators = {'decision_tree': DecisionTreeClassifier(max_depth=3, min_samples_leaf=5), \
@@ -251,6 +261,105 @@ def menuChoiceDM(df, scaledDf):
         plt.figure(figsize=(50, 20))
         _ = tree.plot_tree(RandForestTest.estimators_[0], feature_names=test_features.columns, filled=True)
 
+def menuChoiceADM(df):
+
+    training_features, test_features, training_target, test_target, x_train, x_val, y_train, y_val, x_train_res, y_train_res = dataSplit(df)
+
+    option = st.selectbox(
+        'Select Algorithm',
+        ('Select Option', 'Decision Tree', 'SVM', 'KNN', 'Logistic Regression', 'Random Forest'))
+
+    if option == "Decision Tree":
+        st.write(
+            "Documentation [Click Here!](https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeClassifier.html)")
+
+        criterion = st.text_input("criterion", "gini")
+        max_depth = st.number_input("max_depth", min_value= 1, step=1)
+        min_samples_leaf = st.number_input("min_samples_leaf", 1, step=1)
+
+        if st.button("Model Algorithm") == True:
+            st.info("Model is running... :runner:")
+            model = DecisionTreeClassifier(criterion=criterion, max_depth=max_depth, min_samples_leaf=min_samples_leaf)
+            modelFit = model.fit(test_features, test_target)
+            modelPred = modelFit.predict(test_features)
+            st.markdown("## Training Data")
+            st.text(classification_report(test_target, modelPred))
+            st.write("Model accuracy:", round(accuracy_score(test_target, modelPred) * 100, 2), "%")
+            st.success("Model is done running... :tada:")
+
+    elif option == "SVM":
+        st.write(
+            "Documentation [Click Here!](https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html)")
+
+        C = st.number_input("C", 1.0)
+        kernel = st.text_input("kernel", "rbf")
+
+        if st.button("Model Algorithm") == True:
+            st.info("Model is running... :runner:")
+            model = svm.SVC(C=C, kernel=kernel)
+            modelFit = model.fit(test_features, test_target)
+            modelPred = modelFit.predict(test_features)
+            st.markdown("## Training Data")
+            st.text(classification_report(test_target, modelPred))
+            st.write("Model accuracy:", round(accuracy_score(test_target, modelPred) * 100, 2), "%")
+            st.success("Model is done running... :tada:")
+
+    elif option == "KNN":
+        st.write(
+            "Documentation [Click Here!](https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KNeighborsClassifier.html)")
+
+        n_neighbors = st.number_input("n_neighbors", 5, step=1)
+        algorithm = st.text_input("algorithm", "auto")
+
+        if st.button("Model Algorithm") == True:
+            st.info("Model is running... :runner:")
+            model = KNeighborsClassifier(n_neighbors=n_neighbors,algorithm=algorithm)
+            modelFit = model.fit(test_features, test_target)
+            modelPred = modelFit.predict(test_features)
+            st.markdown("## Training Data")
+            st.text(classification_report(test_target, modelPred))
+            st.write("Model accuracy:", round(accuracy_score(test_target, modelPred) * 100, 2), "%")
+            st.success("Model is done running... :tada:")
+
+    elif option == "Logistic Regression":
+        st.write(
+            "Documentation [Click Here!](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html)")
+
+        C = st.number_input("C", 1.0)
+        penalty = st.text_input("penalty", 'l2')
+
+        if st.button("Model Algorithm") == True:
+            st.info("Model is running... :runner:")
+            model = LogisticRegression(C=C, penalty=penalty)
+            modelFit = model.fit(test_features, test_target)
+            modelPred = modelFit.predict(test_features)
+            st.markdown("## Training Data")
+            st.text(classification_report(test_target, modelPred))
+            st.write("Model accuracy:", round(accuracy_score(test_target, modelPred) * 100, 2), "%")
+            st.success("Model is done running... :tada:")
+
+    elif option == "Random Forest":
+        st.write(
+            "Documentation [Click Here!](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html)")
+
+        n_estimators = st.number_input("n_estimators", 100, step=1)
+        max_features = st.text_input("max_features", 'auto')
+        max_depth = st.number_input("max_depth", min_value=1, step=1)
+        criterion = st.text_input("criterion", 'gini')
+
+        if st.button("Model Algorithm") == True:
+            st.info("Model is running... :runner:")
+            model = RandomForestClassifier(n_estimators=n_estimators,max_features=max_features,max_depth=max_depth,criterion=criterion)
+            modelFit = model.fit(test_features, test_target)
+            modelPred = modelFit.predict(test_features)
+            st.markdown("## Training Data")
+            st.text(classification_report(test_target, modelPred))
+            st.write("Model accuracy:", round(accuracy_score(test_target, modelPred) * 100, 2), "%")
+            st.success("Model is done running... :tada:")
+
+    else:
+        st.markdown("# Please select an option")
+
 def main():
 
     # Read non-scaled data
@@ -266,9 +375,13 @@ def main():
     if choice == "Data Exploration":
         menuChoiceDE(df, dfScaled)
 
-    # Calls Data Modeling Function
-    if choice == "Data Modeling":
-        menuChoiceDM(df, dfScaled)
+    # Calls Existing Data Modeling Function
+    if choice == "Existing Data Modeling":
+        menuChoiceEDM(dfScaled)
+
+    # Calls New Data Modeling Function
+    if choice == "New Data Modeling":
+        menuChoiceADM(dfScaled)
 
 if __name__ == '__main__':
 	main()
