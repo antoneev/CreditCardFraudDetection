@@ -1,0 +1,6 @@
+model,best_score,best_params
+decision_tree,0.9238805970149254,"{'criterion': 'gini', 'max_depth': 3, 'min_samples_leaf': 5}"
+svc,0.9343283582089553,"{'C': 1, 'kernel': 'rbf'}"
+knn,0.9402985074626866,"{'algorithm': 'auto', 'n_neighbors': 3}"
+logistic_regression,0.9358208955223881,"{'C': 0.1, 'penalty': 'l2'}"
+random_forest,0.9447761194029851,"{'criterion': 'gini', 'max_depth': 8, 'max_features': 'sqrt', 'n_estimators': 200}"

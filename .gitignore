@@ -1,2 +1,4 @@
 creditcard.csv
+creditcard-scaleddata.csv
 .ipynb_checkpoints/*
+.idea/*
