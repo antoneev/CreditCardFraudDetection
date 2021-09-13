@@ -1,4 +1,5 @@
 # :construction_worker:	Currently Under Construction!
+TODO - Complete Readme
 
 # Credit Card Fraud Detection
 
