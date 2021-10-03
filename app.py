@@ -212,18 +212,9 @@ def menuChoiceEDM(df):
             # Calling the best estimators
             descisionTree = best_estimators['decision_tree']
             # Fitting the model
-            descisionTree_Train = descisionTree.fit(x_train_res, y_train_res)
+            descisionTree.fit(x_train_res, y_train_res)
             # Predicting the model
-            descisionTree_predTrain = descisionTree_Train.predict(x_train_res)
-            # Output of data
-            st.markdown("## Training Data")
-            st.text(classification_report(y_train_res, descisionTree_predTrain))
-            st.write("Model accuracy:", round(accuracy_score(y_train_res, descisionTree_predTrain) * 100, 2), "%")
-
-            # Fitting the model
-            descisionTree_Val = descisionTree.fit(x_val, y_val)
-            # Predicting the model
-            descisionTree_predVal = descisionTree_Val.predict(x_val)
+            descisionTree_predVal = descisionTree.predict(x_val)
             # Output of data
             st.markdown("## Validation Data")
             st.text(classification_report(y_val, descisionTree_predVal))
@@ -238,18 +229,9 @@ def menuChoiceEDM(df):
             # Calling the best estimators
             SVC = best_estimators['svc']
             # Fitting the model
-            SVC_Train = SVC.fit(x_train_res, y_train_res)
+            SVC.fit(x_train_res, y_train_res)
             # Predicting the model
-            SVC_predTrain = SVC_Train.predict(x_train_res)
-            # Output of data
-            st.markdown("## Training Data")
-            st.text(classification_report(y_train_res, SVC_predTrain))
-            st.write("Model accuracy:", round(accuracy_score(y_train_res, SVC_predTrain) * 100, 2), "%")
-
-            # Fitting the model
-            SVC_Val = SVC.fit(x_val, y_val)
-            # Predicting the model
-            SVC_predVal = SVC_Val.predict(x_val)
+            SVC_predVal = SVC.predict(x_train_res)
             # Output of data
             st.markdown("## Validation Data")
             st.text(classification_report(y_val, SVC_predVal))
@@ -264,18 +246,9 @@ def menuChoiceEDM(df):
             # Calling the best estimators
             KNN = best_estimators['knn']
             # Fitting the model
-            KNN_Train = KNN.fit(x_train_res, y_train_res)
+            KNN.fit(x_train_res, y_train_res)
             # Predicting the model
-            KNN_predTrain = KNN_Train.predict(x_train_res)
-            # Output of data
-            st.markdown("## Training Data")
-            st.text(classification_report(y_train_res, KNN_predTrain))
-            st.write("Model accuracy:", round(accuracy_score(y_train_res, KNN_predTrain) * 100, 2), "%")
-
-            # Fitting the model
-            KNN_Val = KNN.fit(x_val, y_val)
-            # Predicting the model
-            KNN_predVal = KNN_Val.predict(x_val)
+            KNN_predVal = KNN.predict(x_train_res)
             # Output of data
             st.markdown("## Validation Data")
             st.text(classification_report(y_val, KNN_predVal))
@@ -290,18 +263,9 @@ def menuChoiceEDM(df):
             # Calling the best estimators
             log_reg = best_estimators['logistic_regression']
             # Fitting the model
-            log_regTrain = log_reg.fit(x_train_res, y_train_res)
+            log_reg.fit(x_train_res, y_train_res)
             # Predicting the model
-            log_reg_predTrain = log_regTrain.predict(x_train_res)
-            # Output of data
-            st.markdown("## Training Data")
-            st.text(classification_report(y_train_res, log_reg_predTrain))
-            st.write("Model accuracy:", round(accuracy_score(y_train_res, log_reg_predTrain) * 100, 2), "%")
-
-            # Fitting the model
-            log_regVal = log_reg.fit(x_val, y_val)
-            # Predicting the model
-            log_reg_predVal = log_regVal.predict(x_val)
+            log_reg_predVal = log_reg.predict(x_train_res)
             # Output of data
             st.markdown("## Validation Data")
             st.text(classification_report(y_val, log_reg_predVal))
@@ -316,18 +280,9 @@ def menuChoiceEDM(df):
             # Calling the best estimators
             RandForest = best_estimators['random_forest']
             # Fitting the model
-            RandForestTrain = RandForest.fit(x_train_res, y_train_res)
+            RandForest.fit(x_train_res, y_train_res)
             # Predicting the model
-            RandForestpredTrain = RandForestTrain.predict(x_train_res)
-            # Output of data
-            st.markdown("## Training Data")
-            st.text(classification_report(y_train_res, RandForestpredTrain))
-            st.write("Model accuracy:", round(accuracy_score(y_train_res, RandForestpredTrain) * 100, 2), "%")
-
-            # Fitting the model
-            RandForestVal = RandForest.fit(x_val, y_val)
-            # Predicting the model
-            RandForestpredVal = RandForestVal.predict(x_val)
+            RandForestpredVal = RandForest.predict(x_train_res)
             # Output of data
             st.markdown("## Validation Data")
             st.text(classification_report(y_val, RandForestpredVal))
@@ -341,20 +296,47 @@ def menuChoiceEDM(df):
 
     # Displaying the test data on the best training model
     if st.checkbox("Testing Data"):
-        # Display model running
-        st.info("Model is running... :runner:")
-        # Calling the best estimators
-        RandForest = best_estimators['random_forest']
-        # Fitting the model
-        RandForestTest = RandForest.fit(test_features, test_target)
-        # Predicting the model
-        RandForestpredTest = RandForestTest.predict(test_features)
 
-        # Output of data
-        st.text(classification_report(test_target, RandForestpredTest))
-        st.write("Model accuracy:", round(accuracy_score(test_target, RandForestpredTest) * 100, 2), "%")
-        # Display model done running
-        st.success("Model is done running... :tada:")
+        # Select model
+        option = st.selectbox(
+            'Select Algorithm',
+            ('Select Option','Random Forest with Undersampling','Random Forest without Undersampling'))
+
+        if option == "Random Forest with Undersampling":
+            # Display model running
+            st.info("Model is running... :runner:")
+            # Calling the best estimators
+            RandForest = best_estimators['random_forest']
+            # Fitting the model
+            RandForest.fit(x_train_res, y_train_res)
+            # Predicting the model
+            RandForestpredTest = RandForest.predict(test_features)
+            # Output of data
+            st.markdown("## Testing Data")
+            st.text(classification_report(test_target, RandForestpredTest))
+            st.write("Model accuracy:", round(accuracy_score(test_target, RandForestpredTest) * 100, 2), "%")
+            # Display model done running
+            st.success("Model is done running... :tada:")
+
+        elif option == "Random Forest without Undersampling":
+            # Display model running
+            st.info("Model is running... :runner:")
+            # Calling the best estimators
+            RandForest = best_estimators['random_forest']
+            # Fitting the model
+            RandForest.fit(training_features, training_target)
+            # Predicting the model
+            RandForestpredTest = RandForest.predict(test_features)
+            # Output of data
+            st.markdown("## Testing Data")
+            st.text(classification_report(test_target, RandForestpredTest))
+            st.write("Model accuracy:", round(accuracy_score(test_target, RandForestpredTest) * 100, 2), "%")
+            # Display model done running
+            st.success("Model is done running... :tada:")
+
+        else:
+            # Display instructions
+            st.markdown("# Please select an option.")
 
 def menuChoiceADM(df):
     # Returning all training/val/test data
@@ -383,9 +365,9 @@ def menuChoiceADM(df):
             # Pass in parameters
             model = DecisionTreeClassifier(criterion=criterion, max_depth=max_depth, min_samples_leaf=min_samples_leaf)
             # Fit model
-            modelFit = model.fit(test_features, test_target)
+            model.fit(test_features, test_target)
             # Predict model
-            modelPred = modelFit.predict(test_features)
+            modelPred = model.predict(test_features)
             # Display model output
             st.markdown("## Test Data")
             st.text(classification_report(test_target, modelPred))
@@ -410,9 +392,9 @@ def menuChoiceADM(df):
             # Pass in parameters
             model = svm.SVC(C=C, kernel=kernel)
             # Fit model
-            modelFit = model.fit(test_features, test_target)
+            model.fit(test_features, test_target)
             # Predict model
-            modelPred = modelFit.predict(test_features)
+            modelPred = model.predict(test_features)
             # Display model output
             st.markdown("## Test Data")
             st.text(classification_report(test_target, modelPred))
@@ -437,9 +419,9 @@ def menuChoiceADM(df):
             # Pass in parameters
             model = KNeighborsClassifier(n_neighbors=n_neighbors,algorithm=algorithm)
             # Fit model
-            modelFit = model.fit(test_features, test_target)
+            model.fit(test_features, test_target)
             # Predict model
-            modelPred = modelFit.predict(test_features)
+            modelPred = model.predict(test_features)
             # Display model output
             st.markdown("## Test Data")
             st.text(classification_report(test_target, modelPred))
@@ -465,9 +447,9 @@ def menuChoiceADM(df):
             # Pass in parameters
             model = LogisticRegression(C=C, penalty=penalty)
             # Fit model
-            modelFit = model.fit(test_features, test_target)
+            model.fit(test_features, test_target)
             # Predict model
-            modelPred = modelFit.predict(test_features)
+            modelPred = model.predict(test_features)
             # Display model output
             st.markdown("## Test Data")
             st.text(classification_report(test_target, modelPred))
@@ -494,9 +476,9 @@ def menuChoiceADM(df):
             # Pass in parameters
             model = RandomForestClassifier(n_estimators=n_estimators,max_features=max_features,max_depth=max_depth,criterion=criterion)
             # Fit model
-            modelFit = model.fit(test_features, test_target)
+            model.fit(test_features, test_target)
             # Predict model
-            modelPred = modelFit.predict(test_features)
+            modelPred = model.predict(test_features)
             # Display model output
             st.markdown("## Test Data")
             st.text(classification_report(test_target, modelPred))

@@ -26,17 +26,21 @@ The dataset was sourced from [Kaggle](https://www.kaggle.com/mlg-ulb/creditcardf
 ### Training Data
 | Algorithm | Training Accuracy (Gridsearch) | Validation Accuracy |
 | --- | ----------- | ----------- |
-| Decision Tree | 92.34% |  99.94 % |
-| Support Vector Machine | 93.43% | 99.96 % |
-| Logistic Regression | 93.58% | 99.96 % |
-| Random Forest | 94.33% | 99.96 % |
-| K-Nearest Neighbors | 94.03% | 99.97 %  |
+| Decision Tree | 92.34% |  96.20 % |
+| Support Vector Machine | 93.43% | 98.64 % |
+| Logistic Regression | 93.58% | 98.06 % |
+| Random Forest | 94.62% | 98.39 % |
+| K-Nearest Neighbors | 94.03% | 96.39 %  |
 
 ### Test Data
 
-Random Forest accuracy: 99.97 %
+Random Forest accuracy with Random Sampling: 98.57 %
 
-![random forest](imgs/random-forest-output.png)
+![random forest](imgs/random-forest-output-with-undersampling.png)
+
+Random Forest accuracy without Random Sampling: 99.95 %
+
+![random forest](imgs/random-forest-output-without-undersampling.png)
 
 ## Streamlit UI :computer:
 
